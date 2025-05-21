@@ -1,0 +1,31 @@
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.db
+*.sqlite3
+
+# Environments
+.env
+.env.*
+!.env.template
+
+# VSCode / IDEs
+.vscode/
+.idea/
+*.code-workspace
+
+# Mac / Linux / OS
+.DS_Store
+*.swp
+*.swo
+
+# Logs
+*.log
+
+# Others
+*.bak
+*.old
+*.tmp
