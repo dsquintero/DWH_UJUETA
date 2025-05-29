@@ -67,7 +67,7 @@ def run_sales_etl(database: str, fecha_inicio: str, fecha_fin: str):
     'Db', 'NUM_INTERNO', 'TIPO', 'DocNum', 'DocDate', 'CANCELED', 'TransId',
     'CodigoCliente', 'CodigoArticulo', 'Quantity', 'Currency',
     'TotalMonedaLocal', 'TotalDolar', 'CODIGOVENDEDOR',
-    'CodigoBodega', 'dbpais'
+    'CodigoBodega', 'dbpais', 'CostoRecalculado', 'CostoRecalculadoDolar'
     ]
 
     df_filtrado = df[columnas_necesarias]
@@ -76,7 +76,7 @@ def run_sales_etl(database: str, fecha_inicio: str, fecha_fin: str):
     'db', 'docentry', 'doctype', 'docnum', 'docdate', 'canceled', 'transid',
     'cardcode', 'itemcode', 'quantity', 'currency',
     'linetotallocal', 'linetotadolar', 'slpcode',
-    'whscode', 'pais'
+    'whscode', 'pais', 'costrecallocal', 'costrecaldolar'
     ]
 
     # Asignar nuevos nombres
@@ -94,7 +94,21 @@ def run_sales_etl(database: str, fecha_inicio: str, fecha_fin: str):
     # fast_copy_insert(df_filtrado, "fact_sales")
     insert_into_postgres(df_filtrado, "fact_sales")
 
-    # Paso 3: Eliminar de warehouse
+    # Paso 3: Update en staging
+    print("Actualizando staging.fact_sales...")
+    update_query = """
+    UPDATE staging.fact_sales
+    SET margenlocal = 
+        CASE 
+            WHEN linetotallocal IS NOT NULL AND linetotallocal != 0 
+            THEN (1-(costrecallocal / linetotallocal)) * 100
+            ELSE 0
+        END
+    """
+    execute_postgres_query(update_query)
+
+
+    # Paso 4: Eliminar de warehouse
     print("Eliminando datos existentes en warehouse.fact_sales...")
     delete_query = """
     DELETE FROM warehouse.fact_sales AS whs
@@ -107,7 +121,7 @@ def run_sales_etl(database: str, fecha_inicio: str, fecha_fin: str):
     """
     execute_postgres_query(delete_query)
 
-    # Paso 4: Insertar en warehouse desde staging
+    # Paso 5: Insertar en warehouse desde staging
     print("Insertando nuevos datos en warehouse.fact_sales...")
     insert_query = """
     INSERT INTO warehouse.fact_sales
@@ -115,7 +129,7 @@ def run_sales_etl(database: str, fecha_inicio: str, fecha_fin: str):
     """
     execute_postgres_query(insert_query)
 
-    # Paso 5: Limpiar staging
+    # Paso 6: Limpiar staging
     print("Limpiando staging.fact_sales...")
     execute_postgres_query("TRUNCATE TABLE staging.fact_sales;")
 
