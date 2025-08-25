@@ -42,7 +42,7 @@ def run_all_sales_etl():
     ]
 
     anio_actual = datetime.today().year
-    anio_inicio = 2020
+    anio_inicio = 2025
 
     for db in bases_datos:
         for anio in range(anio_inicio, anio_actual + 1):

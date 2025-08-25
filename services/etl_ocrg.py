@@ -7,7 +7,7 @@ def run_ocrg_etl():
     """Ejecuta el ETL para OCRG."""
     query = """
         SELECT GroupCode, GroupName, GroupType, Locked  
-        FROM OCRG
+        FROM HU_GOLIVE..OCRG
     """
     
     print("Extrayendo datos de OCRG...")

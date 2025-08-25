@@ -7,8 +7,8 @@ def run_ocrd_etl():
     query = """
     SELECT CardCode, CardName, CardType, GroupCode, CreateDate, UpdateDate  
     FROM OCRD
-    WHERE CAST(CreateDate AS DATE) >= CAST(DATEADD(DAY, -30, GETDATE()) AS DATE)
-    OR CAST(UpdateDate AS DATE) >= CAST(DATEADD(DAY, -30, GETDATE()) AS DATE)
+    WHERE CAST(CreateDate AS DATE) >= CAST(DATEADD(DAY, -120, GETDATE()) AS DATE)
+    OR CAST(UpdateDate AS DATE) >= CAST(DATEADD(DAY, -120, GETDATE()) AS DATE)
     """
     
     print("Extrayendo datos de OCRD...")

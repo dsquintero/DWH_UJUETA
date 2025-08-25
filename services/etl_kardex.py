@@ -6,16 +6,16 @@ def run_all_kardex_etl():
     from datetime import datetime
     """Ejecuta el ETL de ventas para múltiples bases de datos y múltiples años."""
     bases_datos = [
-        #'HU_GOLIVE', 
-        #'HU_MEXICO', 
-        #'HU_COSTARICA',
-        #'UJUETA_TRADING',
+        'HU_GOLIVE', 
+        'HU_MEXICO', 
+        'HU_COSTARICA',
+        'UJUETA_TRADING',
         'HU_PANAMA',
-        #'HU_ECUADOR'
+        'HU_ECUADOR'
     ]
 
     anio_actual = datetime.today().year
-    anio_inicio = 2020
+    anio_inicio = 2025
 
     for db in bases_datos:
         for anio in range(anio_inicio, anio_actual + 1):
@@ -33,7 +33,7 @@ def run_kardex_etl(database: str, fecha_inicio: str, fecha_fin: str):
     FROM {database}..OINM
     WHERE DocDate BETWEEN '{fecha_inicio}' AND '{fecha_fin}' 
     """
-    print(query)
+    # print(query)
     print("Extrayendo datos de KARDEX...")
     df = get_data_with_query(query)
     df = normalize_column_names(df)
